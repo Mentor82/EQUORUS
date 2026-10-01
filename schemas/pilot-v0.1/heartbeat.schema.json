@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "liara.heartbeat.snapshot — pilot 0.1",
+  "$comment": "Draft projection, not an upstream schema or wire codec. Semantic checks: docs/CONSUMER_CONTRACTS_V0_1.md.",
+  "type": "object",
+  "properties": {
+    "type_id": {
+      "const": "liara.heartbeat.snapshot"
+    },
+    "schema_version": {
+      "const": "0.1"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "SOURCE_LITERAL",
+            "TOOL_EVIDENCE",
+            "MODEL_GENERATED",
+            "DERIVED_CONTEXT"
+          ]
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "timestamp_ms": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "1.0"
+        },
+        "instance_id": {
+          "type": "string"
+        },
+        "instance_type": {
+          "const": "heartbeat"
+        },
+        "node_id": {
+          "type": "string"
+        },
+        "sequence": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.[0-9]{1,6})?(Z|[+-]\\d{2}:\\d{2})(?![\\s\\S])"
+        },
+        "state": {
+          "enum": [
+            "healthy",
+            "constrained",
+            "degraded",
+            "critical",
+            "unknown"
+          ]
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resource": {
+                "enum": [
+                  "cpu",
+                  "ram",
+                  "gpu",
+                  "npu",
+                  "battery",
+                  "thermal",
+                  "power",
+                  "system"
+                ]
+              },
+              "metric": {
+                "enum": [
+                  "utilization_ratio",
+                  "memory_used_ratio",
+                  "temperature_c",
+                  "power_w",
+                  "charge_ratio",
+                  "charge_rate_w",
+                  "external_power_connected",
+                  "queue_depth",
+                  "active_work",
+                  "available"
+                ]
+              },
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "enum": [
+                  "ratio",
+                  "celsius",
+                  "watts",
+                  "count",
+                  "boolean"
+                ]
+              },
+              "device_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "observed_at": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.[0-9]{1,6})?(Z|[+-]\\d{2}:\\d{2})(?![\\s\\S])"
+              },
+              "source_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "attributes": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "resource",
+              "metric",
+              "value",
+              "unit",
+              "device_id",
+              "observed_at",
+              "source_id",
+              "confidence",
+              "attributes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "schema_version",
+        "instance_id",
+        "instance_type",
+        "node_id",
+        "sequence",
+        "observed_at",
+        "state",
+        "observations",
+        "signals",
+        "confidence"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "type_id",
+    "schema_version",
+    "provenance",
+    "payload"
+  ],
+  "additionalProperties": false
+}

@@ -1,6 +1,8 @@
 # EQUORUS Minimal Common Serialization Contract v0.1
 
-Status: **architecture draft**
+Status: **architecture draft**. Concrete, deliberately restricted pilot mappings
+are defined in [CONSUMER_CONTRACTS_V0_1.md](CONSUMER_CONTRACTS_V0_1.md).
+They do not freeze the general public API.
 
 This document captures the smallest common serialization contract derived from real requirements observed in LIARA, LiNeP, and VINOX.
 
@@ -14,7 +16,7 @@ ObjectEnvelope
   schema_version
   provenance
   payload
-  canonical_profile? 
+  canonical_profile?
   integrity?
 ```
 
@@ -29,7 +31,7 @@ Examples:
 ```text
 liara.heartbeat.snapshot
 liara.memory.fact
-linep.task
+linep.v02.request
 vinox.model.manifest
 ```
 
@@ -109,11 +111,16 @@ If deterministic bytes are required for hashing, signing, deduplication, audit c
 Examples:
 
 ```text
-json-jcs-v1
-linep-wire-v1
+equorus-value-v1 (implemented canonical hash representation)
+json-jcs-v1 (candidate only; not implemented)
 ```
 
 Ordinary encoding and canonical encoding are different operations.
+LiNeP v0.2 wire encoding remains a LiNeP-owned contract, not an EQUORUS
+canonical profile. The pilot rejects inline canonical_profile and integrity;
+M2 provides a detached integrity record to preserve the four-field envelope.
+See [canonical bytes and integrity](CANONICAL_INTEGRITY_V1.md) for exact bytes,
+coverage, bounds and algorithm identifiers.
 
 ## 5. Integrity
 
@@ -175,9 +182,16 @@ These remain responsibilities of the relevant consumer or transport layer.
 
 LIARA may serialize versioned service-contract objects, memory records, audit-relevant objects, and provenance-sensitive context. LIARA retains ownership of governance semantics and policy decisions.
 
-### LiNeP
+### LiNeP v0.2
 
 EQUORUS may encode/decode semantic payloads carried by LiNeP. LiNeP retains ownership of headers, framing, message IDs, sequence/correlation semantics, fragmentation, CRC/MAC and transport behavior.
+All planned adapters target v0.2 explicitly. LiNeP-SL versions/security profiles
+are separate from both EQUORUS object versions and the LiNeP protocol version.
+
+### L.I.A.R.A.-OS
+
+Rust conformance and later OS integration target L.I.A.R.A.-OS.
+L.I.A.R.A.-Cluster and its Cluster OS/Buildroot line are excluded.
 
 ### VINOX
 

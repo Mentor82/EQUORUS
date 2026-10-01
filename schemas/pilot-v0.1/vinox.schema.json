@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "vinox.provenance.snapshot — pilot 0.1",
+  "$comment": "Draft projection, not an upstream schema or wire codec. Semantic checks: docs/CONSUMER_CONTRACTS_V0_1.md.",
+  "type": "object",
+  "properties": {
+    "type_id": {
+      "const": "vinox.provenance.snapshot"
+    },
+    "schema_version": {
+      "const": "0.1"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "SOURCE_LITERAL",
+            "TOOL_EVIDENCE",
+            "MODEL_GENERATED",
+            "DERIVED_CONTEXT"
+          ]
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "timestamp_ms": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "type_id",
+    "schema_version",
+    "provenance",
+    "payload"
+  ],
+  "additionalProperties": false
+}

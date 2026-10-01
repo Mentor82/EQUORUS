@@ -1,0 +1,10 @@
+{
+  "type_id": "vinox.provenance.snapshot",
+  "schema_version": "0.1",
+  "provenance": {
+    "kind": "TOOL_EVIDENCE",
+    "source_id": "fixture:vinox/tool/α",
+    "timestamp_ms": "18446744073709551615"
+  },
+  "payload": {}
+}

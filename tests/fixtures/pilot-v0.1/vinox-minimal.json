@@ -1,0 +1,8 @@
+{
+  "type_id": "vinox.provenance.snapshot",
+  "schema_version": "0.1",
+  "provenance": {
+    "kind": "SOURCE_LITERAL"
+  },
+  "payload": {}
+}

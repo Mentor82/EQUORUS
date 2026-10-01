@@ -1,0 +1,1099 @@
+[
+  {
+    "name": "vinox-full",
+    "base": "vinox-full.json",
+    "expect": "accept"
+  },
+  {
+    "name": "vinox-minimal",
+    "base": "vinox-minimal.json",
+    "expect": "accept"
+  },
+  {
+    "name": "vinox-null-source",
+    "base": "vinox-null-source.json",
+    "expect": "accept"
+  },
+  {
+    "name": "heartbeat",
+    "base": "heartbeat.json",
+    "expect": "accept"
+  },
+  {
+    "name": "linep-options",
+    "base": "linep-options.json",
+    "expect": "accept"
+  },
+  {
+    "name": "linep-no-options",
+    "base": "linep-no-options.json",
+    "expect": "accept"
+  },
+  {
+    "name": "unknown type",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "type_id"
+        ],
+        "value": "unknown"
+      }
+    ],
+    "expect": "TYPE"
+  },
+  {
+    "name": "wrong expected type",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "type_id"
+        ],
+        "value": "vinox.provenance.snapshot"
+      }
+    ],
+    "expect": "TYPE",
+    "expected_type": "linep.v02.request"
+  },
+  {
+    "name": "major version",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "schema_version"
+        ],
+        "value": "1.0"
+      }
+    ],
+    "expect": "VERSION"
+  },
+  {
+    "name": "unknown minor version",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "schema_version"
+        ],
+        "value": "0.2"
+      }
+    ],
+    "expect": "VERSION"
+  },
+  {
+    "name": "unsupported canonicalization",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "canonical_profile"
+        ],
+        "value": "json-jcs-v1"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "unsupported integrity",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "integrity"
+        ],
+        "value": {
+          "algorithm": "sha256",
+          "value": "00"
+        }
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "unknown field",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "unexpected"
+        ],
+        "value": true
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "missing provenance",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "remove",
+        "path": [
+          "provenance"
+        ]
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "unknown provenance",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "kind"
+        ],
+        "value": "TRUSTED"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "empty source is distinct valid",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "source_id"
+        ],
+        "value": ""
+      }
+    ],
+    "expect": "accept"
+  },
+  {
+    "name": "null timestamp",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "timestamp_ms"
+        ],
+        "value": null
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "uint64 overflow",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "timestamp_ms"
+        ],
+        "value": "18446744073709551616"
+      }
+    ],
+    "expect": "UINT64_RANGE"
+  },
+  {
+    "name": "uint64 leading zero",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "timestamp_ms"
+        ],
+        "value": "01"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "uint64 number forbidden",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "timestamp_ms"
+        ],
+        "value": 1
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "unexpected vinox payload",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "text"
+        ],
+        "value": "content"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "LIARA version is separate",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "schema_version"
+        ],
+        "value": "0.1"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "heartbeat uint64 overflow",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "sequence"
+        ],
+        "value": "18446744073709551616"
+      }
+    ],
+    "expect": "UINT64_RANGE"
+  },
+  {
+    "name": "confidence scale",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "confidence"
+        ],
+        "value": 75
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "unknown heartbeat field",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "new_field"
+        ],
+        "value": "x"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "null signals",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "signals"
+        ],
+        "value": null
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "absent signals",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "remove",
+        "path": [
+          "payload",
+          "signals"
+        ]
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "empty observations permitted",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations"
+        ],
+        "value": []
+      }
+    ],
+    "expect": "accept"
+  },
+  {
+    "name": "no timezone",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observed_at"
+        ],
+        "value": "2026-10-01T12:00:00"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "invalid calendar date",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observed_at"
+        ],
+        "value": "2026-02-30T12:00:00Z"
+      }
+    ],
+    "expect": "TIMESTAMP"
+  },
+  {
+    "name": "excess timestamp precision",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observed_at"
+        ],
+        "value": "2026-10-01T12:00:00.1234567Z"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "wrong unit",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "unit"
+        ],
+        "value": "watts"
+      }
+    ],
+    "expect": "METRIC_UNIT"
+  },
+  {
+    "name": "out of range ratio",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "value"
+        ],
+        "value": 1.1
+      }
+    ],
+    "expect": "METRIC_VALUE"
+  },
+  {
+    "name": "unsupported typed attribute",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "attributes",
+          "count"
+        ],
+        "value": 1
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "negative count",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "value"
+        ],
+        "value": -1
+      },
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "metric"
+        ],
+        "value": "queue_depth"
+      },
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "unit"
+        ],
+        "value": "count"
+      }
+    ],
+    "expect": "METRIC_VALUE"
+  },
+  {
+    "name": "invalid boolean observation",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "value"
+        ],
+        "value": 0.5
+      },
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "metric"
+        ],
+        "value": "available"
+      },
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observations",
+          0,
+          "unit"
+        ],
+        "value": "boolean"
+      }
+    ],
+    "expect": "METRIC_VALUE"
+  },
+  {
+    "name": "LiNeP v0.1 rejected",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "protocol_version"
+        ],
+        "value": "0.1"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "LiNeP unknown version",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "protocol_version"
+        ],
+        "value": "0.3"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "request ID zero",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "stream",
+          "request_id"
+        ],
+        "value": "0"
+      }
+    ],
+    "expect": "UINT64_RANGE"
+  },
+  {
+    "name": "seed overflow",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options",
+          "seed"
+        ],
+        "value": "18446744073709551616"
+      }
+    ],
+    "expect": "UINT64_RANGE"
+  },
+  {
+    "name": "nonbinary32 temperature",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "temperature"
+        ],
+        "value": 0.7
+      }
+    ],
+    "expect": "FLOAT32"
+  },
+  {
+    "name": "exact binary32 temperature",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "temperature"
+        ],
+        "value": 0.699999988079071
+      }
+    ],
+    "expect": "accept"
+  },
+  {
+    "name": "binary32 overflow",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "temperature"
+        ],
+        "value": 1e+40
+      }
+    ],
+    "expect": "NUMBER"
+  },
+  {
+    "name": "duplicate option key",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options",
+          "extra_options"
+        ],
+        "value": [
+          [
+            "a",
+            "1"
+          ],
+          [
+            "a",
+            "2"
+          ]
+        ]
+      }
+    ],
+    "expect": "OPTION_KEYS"
+  },
+  {
+    "name": "unsorted option keys",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options",
+          "extra_options"
+        ],
+        "value": [
+          [
+            "z",
+            "1"
+          ],
+          [
+            "a",
+            "2"
+          ]
+        ]
+      }
+    ],
+    "expect": "OPTION_KEYS"
+  },
+  {
+    "name": "negative int32 option preserved",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options",
+          "repeat_last_n"
+        ],
+        "value": -1
+      }
+    ],
+    "expect": "accept"
+  },
+  {
+    "name": "int32 overflow",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options",
+          "top_k"
+        ],
+        "value": 2147483648
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "uint32 overflow",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "stream",
+          "output_id"
+        ],
+        "value": 4294967296
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "boolean not numeric ID",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "stream",
+          "output_id"
+        ],
+        "value": true
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "option flag false but options present",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "has_options"
+        ],
+        "value": false
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "option flag true but options absent",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "remove",
+        "path": [
+          "payload",
+          "options"
+        ]
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "required option absent",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "remove",
+        "path": [
+          "payload",
+          "options",
+          "seed"
+        ]
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "null options",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options"
+        ],
+        "value": null
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "explicit zero seed",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options",
+          "seed"
+        ],
+        "value": "0"
+      }
+    ],
+    "expect": "accept"
+  },
+  {
+    "name": "empty opaque payload",
+    "base": "linep-no-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "payload"
+        ],
+        "value": ""
+      }
+    ],
+    "expect": "accept"
+  },
+  {
+    "name": "lone surrogate",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "source_id"
+        ],
+        "value": "\ud800"
+      }
+    ],
+    "expect": "UNICODE"
+  },
+  {
+    "name": "truncated object",
+    "raw": "{",
+    "expect": "MALFORMED"
+  },
+  {
+    "name": "truncated array",
+    "raw": "[",
+    "expect": "MALFORMED"
+  },
+  {
+    "name": "duplicate key",
+    "raw": "{\"a\":1,\"a\":2}",
+    "expect": "DUPLICATE_KEY"
+  },
+  {
+    "name": "nested duplicate key",
+    "raw": "{\"a\":{\"x\":1,\"x\":2}}",
+    "expect": "DUPLICATE_KEY"
+  },
+  {
+    "name": "NaN",
+    "raw": "{\"a\":NaN}",
+    "expect": "NUMBER"
+  },
+  {
+    "name": "Infinity",
+    "raw": "{\"a\":Infinity}",
+    "expect": "NUMBER"
+  },
+  {
+    "name": "overflow float",
+    "raw": "{\"a\":1e400}",
+    "expect": "NUMBER"
+  },
+  {
+    "name": "negative zero",
+    "raw": "{\"a\":-0}",
+    "expect": "NUMBER"
+  },
+  {
+    "name": "negative float zero",
+    "raw": "{\"a\":-0.0}",
+    "expect": "NUMBER"
+  },
+  {
+    "name": "leading zero",
+    "raw": "{\"a\":01}",
+    "expect": "MALFORMED"
+  },
+  {
+    "name": "trailing bytes",
+    "raw": "{}x",
+    "expect": "MALFORMED"
+  },
+  {
+    "name": "BOM",
+    "raw": "\ufeff{}",
+    "expect": "MALFORMED"
+  },
+  {
+    "name": "unescaped control",
+    "raw": "{\"a\":\"\u0001\"}",
+    "expect": "MALFORMED"
+  },
+  {
+    "name": "unsafe numeric integer",
+    "raw": "{\"a\":9007199254740993}",
+    "expect": "NUMBER"
+  },
+  {
+    "name": "invalid UTF-8",
+    "raw_hex": "7b2261223a22ff227d",
+    "expect": "MALFORMED"
+  },
+  {
+    "name": "byte budget",
+    "base": "heartbeat.json",
+    "limits": {
+      "max_bytes": 1
+    },
+    "expect": "LIMIT"
+  },
+  {
+    "name": "depth budget",
+    "base": "heartbeat.json",
+    "limits": {
+      "max_depth": 2
+    },
+    "expect": "LIMIT"
+  },
+  {
+    "name": "item budget",
+    "base": "heartbeat.json",
+    "limits": {
+      "max_items": 3
+    },
+    "expect": "LIMIT"
+  },
+  {
+    "name": "string budget",
+    "base": "heartbeat.json",
+    "limits": {
+      "max_string_length": 1
+    },
+    "expect": "LIMIT"
+  },
+  {
+    "name": "UTF-8 boundary 32",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "source_id"
+        ],
+        "value": "\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1"
+      }
+    ],
+    "expect": "accept",
+    "limits": {
+      "max_string_length": 32
+    }
+  },
+  {
+    "name": "UTF-8 boundary 31",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "source_id"
+        ],
+        "value": "\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1\u03b1"
+      }
+    ],
+    "expect": "LIMIT",
+    "limits": {
+      "max_string_length": 31
+    }
+  },
+  {
+    "name": "uint64 trailing newline",
+    "base": "vinox-full.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "provenance",
+          "timestamp_ms"
+        ],
+        "value": "1\n"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "timestamp trailing newline",
+    "base": "heartbeat.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "observed_at"
+        ],
+        "value": "2026-10-01T12:00:00Z\n"
+      }
+    ],
+    "expect": "SCHEMA"
+  },
+  {
+    "name": "explicit default options stay present",
+    "base": "linep-options.json",
+    "changes": [
+      {
+        "op": "set",
+        "path": [
+          "payload",
+          "options"
+        ],
+        "value": {
+          "top_p": 0.8999999761581421,
+          "top_k": 40,
+          "repeat_penalty": 1,
+          "repeat_last_n": 64,
+          "seed": "0",
+          "presence_penalty": 0,
+          "frequency_penalty": 0,
+          "stop_sequences": [],
+          "extra_options": []
+        }
+      }
+    ],
+    "expect": "accept"
+  },
+  {
+    "name": "max_bytes boundary 114",
+    "raw": "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{}}",
+    "limits": {
+      "max_bytes": 114
+    },
+    "expect": "accept"
+  },
+  {
+    "name": "max_bytes boundary 113",
+    "raw": "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{}}",
+    "limits": {
+      "max_bytes": 113
+    },
+    "expect": "LIMIT"
+  },
+  {
+    "name": "max_items boundary 6",
+    "raw": "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{}}",
+    "limits": {
+      "max_items": 6
+    },
+    "expect": "accept"
+  },
+  {
+    "name": "max_items boundary 5",
+    "raw": "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{}}",
+    "limits": {
+      "max_items": 5
+    },
+    "expect": "LIMIT"
+  },
+  {
+    "name": "max_depth boundary 3",
+    "raw": "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{}}",
+    "limits": {
+      "max_depth": 3
+    },
+    "expect": "accept"
+  },
+  {
+    "name": "max_depth boundary 2",
+    "raw": "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{}}",
+    "limits": {
+      "max_depth": 2
+    },
+    "expect": "LIMIT"
+  }
+]

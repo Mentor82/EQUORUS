@@ -24,10 +24,10 @@ Codec
 (JSON / binary / future codecs)
     |
     v
-Canonical bytes
+Encoded bytes (canonical only with an explicit profile)
     |
     +--> persistence
-    +--> hashing/signing
+    +--> hashing/signing (requires a defined byte profile)
     `--> transport (e.g. LiNeP)
 ```
 
@@ -48,10 +48,15 @@ See [`docs/SERIALIZATION_CONTRACT_V0_1.md`](docs/SERIALIZATION_CONTRACT_V0_1.md)
 ## Intended consumers
 
 - **LIARA** — versioned service contracts, memory/audit objects, orchestrator state and provenance-sensitive data.
-- **LiNeP** — stable mapping between semantic payload objects and transport/wire representations.
+- **LiNeP v0.2** — stable mapping between semantic payload objects and existing transport/wire representations; Go conformance through LiNeP-Ollama.
 - **VINOX** — native C/C++ structured data, manifests, provenance envelopes, and future API/MCP payloads.
 
-EQUORUS is independent of all three projects. They are consumers, not owners of the serialization model.
+EQUORUS is independent of its consumers. Rust conformance and OS integration target
+**L.I.A.R.A.-OS**; **L.I.A.R.A.-Cluster / Cluster OS is excluded** from this plan.
+
+The [draft consumer contracts](docs/CONSUMER_CONTRACTS_V0_1.md) include pinned
+source references, JSON Schemas and synthetic fixtures for VINOX provenance,
+LIARA heartbeat and LiNeP v0.2 requests. See [fixture validation](tests/README.md).
 
 ## Experimental seed
 
@@ -59,7 +64,14 @@ The repository contains an experimental JSON parser seed under `experimental/jso
 
 ## Status
 
-**Pre-v0.1 / architecture seed.** Public API and wire contracts are not frozen yet.
+**Pre-v0.1 / M2 implementation.** Owned C++20 values, immutable envelope snapshots,
+a bounded JSON codec and an independent Python reference are available against
+the pilot fixtures. See [build and API](docs/BUILD_AND_API.md) and
+[M1 verification](docs/M1_VERIFICATION.md). M2 adds the explicit
+[`equorus-value-v1` byte profile and detached SHA-256 checks](docs/CANONICAL_INTEGRITY_V1.md),
+with independent C++/Python implementations and published golden vectors.
+Consumer runtime adapters, exported C ABI and Go/Rust implementations are later work.
+Public API and object contracts are not frozen.
 
 ## License
 

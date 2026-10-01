@@ -1,0 +1,23 @@
+{
+  "type_id": "linep.v02.request",
+  "schema_version": "0.1",
+  "provenance": {
+    "kind": "SOURCE_LITERAL",
+    "source_id": "fixture:synthetic"
+  },
+  "payload": {
+    "protocol_version": "0.2",
+    "stream": {
+      "request_id": "9007199254740993",
+      "execution_id": "18446744073709551615",
+      "output_id": 0
+    },
+    "profile": "chat",
+    "model_id": "fixture/model",
+    "payload": "{\"messages\":[{\"role\":\"user\",\"content\":\"Grüße 🌙\"}]}",
+    "max_tokens": 64,
+    "temperature": 0.5,
+    "stream_requested": true,
+    "has_options": false
+  }
+}

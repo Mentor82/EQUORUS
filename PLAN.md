@@ -1,193 +1,127 @@
 # EQUORUS — Implementation Plan
 
-> **Project premise:** Different representations may change; contract-equivalent information must not.
+Status: pre-v0.1; M1/M2 implemented and verified on Windows and VM108. Hosted CI pending. Updated 2026-10-01.
 
-## 0. Scope
+Different representations may change; contract-equivalent information must not.
 
-EQUORUS is a serialization and canonical representation layer. It is **not** a transport protocol, message broker, governance engine, database, or model runtime.
+## Scope and ownership
 
-### In scope
+EQUORUS owns the object envelope, lossless value representation, explicit schema
+compatibility, codec boundaries, resource limits and conformance fixtures.
+Consumers own domain validation, authorization, evidence assessment and migrations.
 
-- canonical object envelope
-- type identity
-- schema versioning/evolution
-- provenance preservation
-- codec abstraction
-- deterministic/canonical encoding profiles
-- integrity metadata over encoded representations
-- decode resource limits
-- C++20 core with stable C ABI planned
-- conformance and cross-language fixtures
+All LiNeP integration targets **LiNeP v0.2**. LiNeP owns headers, framing, stream
+identities, lifecycle, leases and transport security. LiNeP-SL is a separate
+security layer with its own version/profile. An EQUORUS schema version must
+never imply a LiNeP or LiNeP-SL version.
 
-### Explicit non-goals for v0.1
+**L.I.A.R.A.-Cluster and its Cluster OS/Buildroot line are excluded.**
+L.I.A.R.A.-OS is the infrastructure/OS consumer. Go remains relevant through
+LiNeP-Ollama; Rust through L.I.A.R.A.-OS. Cluster audit and package schemas are
+not requirements for EQUORUS.
 
-- replacing LiNeP framing or transport security
-- making LIARA governance decisions
-- replacing VINOX inference/model lifecycle
-- schema registry service
-- Protobuf/Avro/MessagePack support before a real consumer requires it
-- compression framework
-- signing/PKI framework
-- arbitrary object reflection
+| Consumer | Initial boundary | Ownership retained by consumer |
+| --- | --- | --- |
+| VINOX | Provenance metadata; manifests later | C ABI, inference and model lifecycle |
+| L.I.A.R.A. | Heartbeat snapshot; evidence/memory later | Units, evidence states, confidence, governance |
+| LiNeP v0.2 / LiNeP-Ollama | Request projection and conformance | Wire codec, options semantics, execution and security |
+| LiNeP-llamacpp / LiNeP-llama.cpp | Later C++ adapter | Runtime integration; select/pin intended repository first |
+| L.I.A.R.A.-OS | Rust conformance, later package/runtime integration | Node authority, existing signatures and OS lifecycle |
+| Personal / www.mw-dresden.de | Later explicit adapters | User boundaries, memory meaning, HTTP/OpenAPI contracts |
+| AI-Training / Industrial_KI / MW-PyWebServer | Only for a concrete later exchange | Dataset, industrial protocol and event semantics |
+| LiNeP-TensorRT / LiNeP-vllm / Spielzimmer / Codex | No initial implementation requirement | Outside the first milestones |
 
-## 1. Phase 0 — Architecture seed
+## M0 — Reviewable consumer contracts (accepted baseline)
 
-**Goal:** Freeze terminology before implementation spreads.
+- [x] Record scope and pinned source references.
+- [x] Specify three independent exchange types: VINOX provenance, LIARA heartbeat,
+  LiNeP v0.2 request.
+- [x] Add draft JSON Schemas, synthetic examples and executable rejection cases.
+- [x] Define pilot number, presence, version, unknown-field and limit rules.
+- [x] User accepted these mappings as the implementation baseline; public API
+  freeze remains the v0.1 release gate.
 
-Deliverables:
+Deliverables: [consumer contracts](docs/CONSUMER_CONTRACTS_V0_1.md),
+`schemas/pilot-v0.1/`, `tests/fixtures/pilot-v0.1/` and
+`tests/validate_contract_fixtures.py`.
 
-- `docs/SERIALIZATION_CONTRACT_V0_1.md`
-- object-envelope terminology
-- provenance rules
-- schema-version compatibility rules
-- canonicalization profile concept
-- explicit boundaries to LIARA, LiNeP, and VINOX
-- preserve the VINOX JSON parser spike under `experimental/`
+Exit: the fixture checker passes; each field has an explicit mapping and each
+unsupported input fails without lossy coercion. This proves fixture consistency,
+not a production decoder, native roundtrip or wire compatibility.
 
-Exit criteria:
+## M1 — C++ core and independent Python reference
 
-- one unambiguous definition of serialization vs codec vs transport
-- no dependency on a particular JSON implementation in the core contract
+Implementation: [build/API guide](docs/BUILD_AND_API.md),
+[C ABI design](docs/C_ABI_DESIGN.md), C++ core/codec/pilot libraries and independent
+Python reference. Windows/Linux CI workflow is included; hosted CI has not run
+as part of this local task. See [verification record](docs/M1_VERIFICATION.md).
 
-## 2. Phase 1 — Core object model
+Build C++20 library/test targets with CMake and Windows/Linux CI. Implement owned,
+snapshot-friendly values, envelope validation and a replaceable ordinary JSON
+codec. Design C ABI ownership/error/buffer rules before consumer linking.
 
-Introduce a small C++20 model for:
+Implement an independent Python reference against the same fixtures. Test
+native object -> JSON -> native object, including null/absence, uint64 boundaries,
+finite floating point, Unicode, duplicate keys and schema mismatches. Production
+decoders enforce limits during parsing, before excessive allocation.
 
-```text
-ObjectEnvelope
-  type_id
-  schema_version
-  provenance
-  payload
-  canonical_profile (optional)
-  integrity (optional)
-```
+Exit: both implementations preserve declared values and reject the same invalid
+inputs. No consumer migration is required. The experimental parser stays isolated.
 
-Requirements:
+## M2 — Canonical bytes and integrity
 
-- immutable/snapshot-friendly value semantics
-- explicit byte/string ownership
-- bounded lengths
-- no transport-specific fields
-- deterministic validation errors
+Implemented profile: `equorus-value-v1`, with exact binary64 bits and unsigned
+UTF-8 key ordering. Detached `sha-256` records cover the whole envelope and bind
+the profile/algorithm through a domain-separated preimage. See the normative
+[M2 contract](docs/CANONICAL_INTEGRITY_V1.md). JCS/RFC 8785 remains a candidate,
+not an implemented promise. No struct layout is hashed.
+Executed checks: [M2 verification](docs/M2_VERIFICATION.md).
 
-A stable C ABI must be designed before consumers are asked to link against the library.
+Exit: C++/Python produce identical published byte fixtures; changes to covered
+data fail verification. Unsupported profiles fail explicitly. Existing LiNeP-SL
+MACs and OS package signatures remain owned by their protocols.
 
-## 3. Phase 2 — Codec interface
+## M3 — Go and Rust conformance
 
-Define codec operations conceptually as:
+Add independent Go checks for LiNeP-Ollama and Rust checks for L.I.A.R.A.-OS.
+Native implementations may share a specification without linking a C++ runtime.
+Exercise uint64 IDs/seeds, float32 options, limits and version/presence behavior.
+Reuse pinned LiNeP v0.2 wire golden frames in LiNeP adapter tests, separately
+from EQUORUS object fixtures.
 
-```text
-encode(object, profile, limits) -> bytes
-decode(bytes, expected_type, supported_versions, limits) -> object
-```
+Exit: C++, Python, Go and Rust agree on supported values and canonical bytes.
+Existing LiNeP v0.2 frames remain byte-compatible under adapter tests.
 
-Initial production codec candidate: JSON.
+## M4 — Opt-in consumer integration
 
-The codec implementation must remain replaceable. Codec choice must never define object identity or provenance semantics.
+1. VINOX provenance and LIARA heartbeat export/import pilots.
+2. LiNeP v0.2 runtime adapters and L.I.A.R.A.-OS after M3.
+3. Personal and website only through explicit domain/API mappings.
+4. Other projects only when a real exchange case justifies them.
 
-## 4. Phase 3 — Versioning and evolution
+Keep existing paths available for comparison and rollback. Do not inject an
+EQUORUS envelope into a LiNeP payload without an explicitly supported application
+mapping. A request projection is not a new wire format. Do not convert Personal
+confidence to Core confidence without an agreed domain rule. Do not replace
+existing OS package signature preimages.
 
-Define compatibility behavior for:
+Exit: real adapter roundtrips and existing consumer tests pass; unsupported
+features fail clearly; opt-in can be disabled without migrating stored data.
 
-- same major / additive minor evolution
-- unknown optional fields
-- unknown required fields
-- incompatible major versions
-- downgrade/upgrade policy
+## M5 — v0.1 release gate
 
-Default safety rule: incompatible or ambiguous decoding fails closed.
+- Reviewed envelope/schema contracts and compatibility matrix.
+- Tested C++ API and C ABI lifetimes, allocation and error handling.
+- Production JSON codec with incremental resource limits and fuzz coverage.
+- Canonical byte/integrity fixtures, including corruption cases.
+- C++/Python/Go/Rust conformance for the advertised subset.
+- Consumer integration evidence, reproducible builds and installation docs.
 
-## 5. Phase 4 — Canonicalization
+No binary codec, compression framework, registry service, reflection system,
+PKI policy or wholesale consumer migration is required for v0.1.
 
-Add explicit canonical profiles only where deterministic bytes are required.
+## Experimental parser
 
-Candidate first profile:
-
-- canonical JSON profile compatible with a documented standard such as JCS/RFC 8785, subject to implementation review.
-
-Canonicalization must be opt-in and named. Ordinary encoding and canonical encoding are different operations.
-
-## 6. Phase 5 — Provenance and integrity
-
-Preserve provenance classes compatible with the requirement first identified in VINOX:
-
-- source literal
-- tool evidence
-- model generated
-- derived context
-
-Rules:
-
-- serialization does not silently reclassify provenance
-- transformation creates a new derived object instead of mutating source provenance
-- integrity metadata is computed over defined encoded bytes
-- hash/MAC/signature algorithms remain policy choices outside the base object semantics
-
-## 7. Phase 6 — Consumer adapters
-
-Adapters and conformance fixtures for real consumers:
-
-### LIARA
-
-- versioned Pydantic/service-contract fixture
-- memory/audit object fixture
-- provenance-preserving round trip
-
-### LiNeP
-
-- semantic payload -> encoded bytes -> LiNeP payload boundary
-- retain LiNeP header, sequence, CRC/MAC and fragmentation ownership in LiNeP
-
-### VINOX
-
-- C/C++ provenance envelope fixture
-- model-manifest/structured request fixture
-- future MCP/HTTP payload compatibility evaluation
-
-## 8. Phase 7 — Cross-language conformance
-
-Golden fixtures must prove equivalent information across at least:
-
-- C++
-- Python
-
-Future bindings may be added only against the same object and canonicalization contracts.
-
-## 9. Experimental parser research
-
-`experimental/json_parser_seed/` is intentionally separate from the production codec path.
-
-Research topics:
-
-- RFC 8259 conformance
-- UTF-16 surrogate pairs / UTF-8 correctness
-- duplicate-key policy
-- maximum nesting depth
-- allocation strategy / arena allocation
-- DOM vs SAX/streaming modes
-- deterministic memory ceilings
-- fuzzing
-- benchmark comparison against established libraries
-- SIMD opportunities
-
-Promotion into production requires benchmarks, conformance evidence, fuzzing/security review, and an explicit architecture decision.
-
-## 10. Definition of done for v0.1
-
-EQUORUS v0.1 is ready when:
-
-- object envelope and terminology are frozen
-- public C++ API and C ABI are documented and tested
-- at least one production codec exists
-- schema/version compatibility tests exist
-- provenance round-trip tests exist
-- canonical byte fixtures exist
-- decode resource-limit tests exist
-- LIARA, LiNeP and VINOX integration fixtures demonstrate the boundary without coupling EQUORUS to those projects
-
----
-
-**Guiding invariant:** Representation may change. Contract-equivalent information must survive.
-
-— Nephy 🔎
+`experimental/json_parser_seed/` remains research-only. Promotion requires
+conformance, Unicode/number/duplicate-key review, bounded allocation, fuzzing,
+benchmarks and an explicit architecture decision. It is not on the critical path.

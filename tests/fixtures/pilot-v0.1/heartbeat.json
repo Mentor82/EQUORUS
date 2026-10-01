@@ -1,0 +1,32 @@
+{
+  "type_id": "liara.heartbeat.snapshot",
+  "schema_version": "0.1",
+  "provenance": {
+    "kind": "SOURCE_LITERAL",
+    "source_id": "fixture:synthetic"
+  },
+  "payload": {
+    "schema_version": "1.0",
+    "instance_id": "fixture-heartbeat",
+    "instance_type": "heartbeat",
+    "node_id": "fixture-node",
+    "sequence": "9007199254740993",
+    "observed_at": "2026-10-01T12:00:00.123456+02:00",
+    "state": "healthy",
+    "observations": [
+      {
+        "resource": "cpu",
+        "metric": "utilization_ratio",
+        "value": 0.5,
+        "unit": "ratio",
+        "device_id": "default",
+        "observed_at": "2026-10-01T12:00:00.123456+02:00",
+        "source_id": "fixture:sensor",
+        "confidence": 1,
+        "attributes": {}
+      }
+    ],
+    "signals": [],
+    "confidence": 0.75
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "linep.v02.request — pilot 0.1",
+  "$comment": "Draft projection, not an upstream schema or wire codec. Semantic checks: docs/CONSUMER_CONTRACTS_V0_1.md.",
+  "type": "object",
+  "properties": {
+    "type_id": {
+      "const": "linep.v02.request"
+    },
+    "schema_version": {
+      "const": "0.1"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "SOURCE_LITERAL",
+            "TOOL_EVIDENCE",
+            "MODEL_GENERATED",
+            "DERIVED_CONTEXT"
+          ]
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "timestamp_ms": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "protocol_version": {
+          "const": "0.2"
+        },
+        "stream": {
+          "type": "object",
+          "properties": {
+            "request_id": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+            },
+            "execution_id": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+            },
+            "output_id": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            }
+          },
+          "required": [
+            "request_id",
+            "execution_id",
+            "output_id"
+          ],
+          "additionalProperties": false
+        },
+        "profile": {
+          "enum": [
+            "generate",
+            "chat",
+            "embed"
+          ]
+        },
+        "model_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payload": {
+          "type": "string"
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "stream_requested": {
+          "type": "boolean"
+        },
+        "has_options": {
+          "type": "boolean"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "top_p": {
+              "type": "number"
+            },
+            "top_k": {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            "repeat_penalty": {
+              "type": "number"
+            },
+            "repeat_last_n": {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            "seed": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})(?![\\s\\S])"
+            },
+            "presence_penalty": {
+              "type": "number"
+            },
+            "frequency_penalty": {
+              "type": "number"
+            },
+            "stop_sequences": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "extra_options": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "items": false,
+                "minItems": 2,
+                "maxItems": 2
+              }
+            }
+          },
+          "required": [
+            "top_p",
+            "top_k",
+            "repeat_penalty",
+            "repeat_last_n",
+            "seed",
+            "presence_penalty",
+            "frequency_penalty",
+            "stop_sequences",
+            "extra_options"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "protocol_version",
+        "stream",
+        "profile",
+        "model_id",
+        "payload",
+        "max_tokens",
+        "temperature",
+        "stream_requested",
+        "has_options"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "has_options": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "options"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "options"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "type_id",
+    "schema_version",
+    "provenance",
+    "payload"
+  ],
+  "additionalProperties": false
+}

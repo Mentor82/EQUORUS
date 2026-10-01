@@ -1,0 +1,10 @@
+{
+  "type_id": "vinox.provenance.snapshot",
+  "schema_version": "0.1",
+  "provenance": {
+    "kind": "DERIVED_CONTEXT",
+    "source_id": null,
+    "timestamp_ms": "0"
+  },
+  "payload": {}
+}
