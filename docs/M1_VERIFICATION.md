@@ -47,7 +47,8 @@ Both runs include all shared cases, 17 bidirectional roundtrips, six native
 Python snapshots, ten adversarial cases and 648 type mutations. No sanitizer
 diagnostics were reported. VM107 was not contacted.
 
-The hosted workflow has been written but not pushed/run. Local Windows and VM108
-Linux verification satisfy the M1 implementation checks; hosted CI execution is
-still unverified. C ABI implementation, Go/Rust conformance, real consumer
+At the M1 checkpoint the hosted workflow had not been pushed/run; it subsequently
+passed during M2 (see [hosted results](M2_VERIFICATION.md)). Local Windows and VM108
+Linux verification satisfy the M1 implementation checks. C ABI implementation,
+Go/Rust conformance, real consumer
 adapters, fuzzing and release packaging remain later gates.

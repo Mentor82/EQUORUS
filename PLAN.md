@@ -1,6 +1,6 @@
 # EQUORUS — Implementation Plan
 
-Status: pre-v0.1; M1/M2 implemented and verified on Windows and VM108. Hosted CI pending. Updated 2026-10-01.
+Status: pre-v0.1; M1/M2 verified locally, on VM108 and in Windows/Linux hosted CI. Updated 2026-10-01.
 
 Different representations may change; contract-equivalent information must not.
 
@@ -53,8 +53,8 @@ not a production decoder, native roundtrip or wire compatibility.
 
 Implementation: [build/API guide](docs/BUILD_AND_API.md),
 [C ABI design](docs/C_ABI_DESIGN.md), C++ core/codec/pilot libraries and independent
-Python reference. Windows/Linux CI workflow is included; hosted CI has not run
-as part of this local task. See [verification record](docs/M1_VERIFICATION.md).
+Python reference. Windows/Linux CI is included and passed during M2.
+See [M1 verification](docs/M1_VERIFICATION.md) and [hosted results](docs/M2_VERIFICATION.md).
 
 Build C++20 library/test targets with CMake and Windows/Linux CI. Implement owned,
 snapshot-friendly values, envelope validation and a replaceable ordinary JSON

@@ -31,7 +31,14 @@ No service was installed or deployed. VM107 was not contacted.
 
 ## Hosted CI
 
-The Windows/Linux workflow now includes all five test groups. Hosted execution
-is pending publication of this implementation branch; results will be recorded
-after the actual run. The C ABI, Go/Rust, consumer integration, fuzzing and release
-packaging remain separate milestones.
+The [implementation run](https://github.com/Mentor82/EQUORUS/actions/runs/36920840172)
+for commit `db9d41d97c1711d34a2a903faa7ffef1714a7ac3` passed all five test groups
+on both Ubuntu (GCC 13.3.0) and Windows (MSVC 19.51.36260.0), from fresh checkouts.
+Both jobs used Python 3.12. The workflow now uses current checkout/setup-python
+releases to address the Node.js 20 deprecation annotation in that first run.
+Subsequent branch pushes rerun all five groups automatically; inspect the
+[branch runs](https://github.com/Mentor82/EQUORUS/actions?query=branch%3Acodex%2Fm2-canonical-integrity)
+for the latest commit-specific result.
+
+The C ABI, Go/Rust, consumer integration, fuzzing and release packaging remain
+separate milestones.
