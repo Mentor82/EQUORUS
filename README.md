@@ -64,14 +64,14 @@ The repository contains an experimental JSON parser seed under `experimental/jso
 
 ## Status
 
-**Pre-v0.1 / M2 implementation.** Owned C++20 values, immutable envelope snapshots,
-a bounded JSON codec and an independent Python reference are available against
-the pilot fixtures. See [build and API](docs/BUILD_AND_API.md) and
-[M1 verification](docs/M1_VERIFICATION.md). M2 adds the explicit
-[`equorus-value-v1` byte profile and detached SHA-256 checks](docs/CANONICAL_INTEGRITY_V1.md),
-with independent C++/Python implementations and published golden vectors.
-Consumer runtime adapters, exported C ABI and Go/Rust implementations are later work.
-Public API and object contracts are not frozen.
+**v0.1.0 Release Complete.** All 6 planned milestones (**M0 through M5**) are fully implemented, verified, and documented.
+- **Milestones M0–M5 Complete:** Full reviewable consumer contracts, bounded C++20 core, pure C ABI, reference Python implementation, zero-dependency Rust implementation, and pure Go implementation.
+- **Canonical Integrity (`equorus-value-v1`):** 100% bit-for-bit canonical digest equivalence across C++, Rust, Go, Python, and Browser JavaScript (WebCrypto).
+- **Consumer Adapters:** VINOX provenance snapshot, LIARA heartbeat snapshot, and LiNeP v0.2 request projections.
+- **EQUORUS Studio & Conformance Daemon:** Interactive web workbench and multi-runtime comparison daemon running natively on L.I.A.R.A. OS (VM 108, port 8088).
+- **Cluster Package:** Packaged as `equorus-0.1.0-x86_64.lpkg` on L.I.A.R.A. OS with CycloneDX v1.6 SBOM and SLSA Level 3 provenance.
+
+See the [v0.1 Release Gate Report](docs/RELEASE_V0_1.md), the [Implementation Plan](PLAN.md), and [Consumer Contracts](docs/CONSUMER_CONTRACTS_V0_1.md).
 
 ## License
 
