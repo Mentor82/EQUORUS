@@ -1,6 +1,6 @@
 # EQUORUS — Implementation Plan
 
-Status: pre-v0.1; M1/M2/M3 verified locally, on VM108 and in conformance suites. Updated 2026-10-02.
+Status: v0.1 release ready; M0 through M5 verified locally, on VM108 and in conformance suites. Updated 2026-10-02.
 
 Different representations may change; contract-equivalent information must not.
 
@@ -107,12 +107,13 @@ features fail clearly; opt-in can be disabled without migrating stored data.
 
 ## M5 — v0.1 release gate
 
-- Reviewed envelope/schema contracts and compatibility matrix.
-- Tested C++ API and C ABI lifetimes, allocation and error handling.
-- Production JSON codec with incremental resource limits and fuzz coverage.
-- Canonical byte/integrity fixtures, including corruption cases.
-- C++/Python/Go/Rust conformance for the advertised subset.
-- Consumer integration evidence, reproducible builds and installation docs.
+Implementation & verification report: [v0.1 Release Gate Report](docs/RELEASE_V0_1.md).
+- [x] Reviewed envelope/schema contracts and compatibility matrix.
+- [x] Tested C++ API and C ABI lifetimes, allocation and multithreaded error handling.
+- [x] Production JSON codec with incremental resource limits and bounded fuzz coverage.
+- [x] Canonical byte/integrity fixtures, including corruption cases.
+- [x] C++/Python/Go/Rust conformance for the advertised subset across all test suites.
+- [x] Consumer integration evidence, reproducible builds, CMake package config, and installation docs.
 
 No binary codec, compression framework, registry service, reflection system,
 PKI policy or wholesale consumer migration is required for v0.1.

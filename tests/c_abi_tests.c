@@ -12,6 +12,33 @@ static void check(int condition, const char* msg) {
     }
 }
 
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+typedef struct ThreadData {
+    const equorus_envelope* env;
+    int success;
+} ThreadData;
+
+static DWORD WINAPI ReaderThread(LPVOID param) {
+    ThreadData* data = (ThreadData*)param;
+    data->success = 0;
+    char type_buf[64];
+    size_t type_len = 0;
+    for (int i = 0; i < 50; ++i) {
+        if (equorus_envelope_get_type_id(data->env, type_buf, sizeof(type_buf), &type_len) != EQUORUS_STATUS_OK) return 1;
+        if (strcmp(type_buf, "vinox.provenance.snapshot") != 0) return 2;
+        uint8_t sha[32];
+        equorus_buffer* canon = NULL;
+        if (equorus_calculate_integrity(data->env, sha, &canon) != EQUORUS_STATUS_OK) return 3;
+        equorus_buffer_free(canon);
+    }
+    data->success = 1;
+    return 0;
+}
+#endif
+
 int main(void) {
     printf("Starting C ABI smoke tests (pure C)...\n");
 
@@ -174,6 +201,53 @@ int main(void) {
         s = equorus_vinox_provenance_to_envelope(&full_meta, NULL, &env);
         check(s == EQUORUS_STATUS_LIMIT, "short struct rejected");
     }
+
+    /* 5. Adversarial input and exact error exits via C ABI */
+    {
+        equorus_envelope* env = NULL;
+        /* Unicode lone surrogate */
+        const char* lone_surr = "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\",\"source_id\":\"\\ud800\"},\"payload\":{}}";
+        equorus_status s = equorus_decode((const uint8_t*)lone_surr, strlen(lone_surr), "vinox.provenance.snapshot", 25, NULL, &env);
+        check(s == EQUORUS_STATUS_UNICODE, "lone surrogate yields STATUS_UNICODE");
+        check(env == NULL, "env handle null on unicode error");
+
+        /* Duplicate key */
+        const char* dup_key = "{\"type_id\":\"vinox.provenance.snapshot\",\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{}}";
+        s = equorus_decode((const uint8_t*)dup_key, strlen(dup_key), "vinox.provenance.snapshot", 25, NULL, &env);
+        check(s == EQUORUS_STATUS_DUPLICATE_KEY, "duplicate key yields STATUS_DUPLICATE_KEY");
+
+        /* Negative zero number */
+        const char* neg_zero = "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"SOURCE_LITERAL\"},\"payload\":{},\"extra\": -0.0}";
+        s = equorus_decode((const uint8_t*)neg_zero, strlen(neg_zero), "vinox.provenance.snapshot", 25, NULL, &env);
+        check(s == EQUORUS_STATUS_NUMBER, "negative zero yields STATUS_NUMBER");
+    }
+
+#if defined(_WIN32)
+    /* 6. Concurrent read threads from immutable envelope */
+    {
+        const char* json = "{\"type_id\":\"vinox.provenance.snapshot\",\"schema_version\":\"0.1\",\"provenance\":{\"kind\":\"TOOL_EVIDENCE\",\"source_id\":\"fixture:thread\",\"timestamp_ms\":\"12345\"},\"payload\":{}}";
+        equorus_envelope* shared_env = NULL;
+        equorus_status s = equorus_decode((const uint8_t*)json, strlen(json), "vinox.provenance.snapshot", 25, NULL, &shared_env);
+        check(s == EQUORUS_STATUS_OK, "decode shared env for thread test");
+
+        #define NUM_THREADS 4
+        HANDLE threads[NUM_THREADS];
+        ThreadData td[NUM_THREADS];
+        for (int i = 0; i < NUM_THREADS; ++i) {
+            td[i].env = shared_env;
+            td[i].success = 0;
+            threads[i] = CreateThread(NULL, 0, ReaderThread, &td[i], 0, NULL);
+            check(threads[i] != NULL, "thread created");
+        }
+
+        WaitForMultipleObjects(NUM_THREADS, threads, TRUE, INFINITE);
+        for (int i = 0; i < NUM_THREADS; ++i) {
+            check(td[i].success == 1, "thread completed successfully");
+            CloseHandle(threads[i]);
+        }
+        equorus_envelope_free(shared_env);
+    }
+#endif
 
     printf("All C ABI smoke tests passed successfully.\n");
     return 0;

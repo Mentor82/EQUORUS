@@ -73,4 +73,50 @@ if(BUILD_TESTING)
   add_test(NAME c_abi_smoke COMMAND equorus_c_abi_tests)
   add_test(NAME liara_heartbeat_adapter COMMAND ${Python3_EXECUTABLE}
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_liara_adapter.py)
+  add_executable(equorus_fuzz_limits_tests tests/fuzz_limits_tests.cpp)
+  target_link_libraries(equorus_fuzz_limits_tests PRIVATE equorus_json)
+  add_test(NAME fuzz_limits COMMAND equorus_fuzz_limits_tests)
 endif()
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+install(
+  TARGETS equorus equorus_json equorus_pilot equorus_integrity equorus_adapters equorus_c
+  EXPORT equorusTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+  DIRECTORY include/
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+  EXPORT equorusTargets
+  FILE equorusTargets.cmake
+  NAMESPACE equorus::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/equorus
+)
+
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/equorusConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/equorusConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/equorusConfig.cmake"
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/equorus
+)
+
+install(
+  FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/equorusConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/equorusConfigVersion.cmake"
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/equorus
+)
