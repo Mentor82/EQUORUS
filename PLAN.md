@@ -1,6 +1,6 @@
 # EQUORUS — Implementation Plan
 
-Status: pre-v0.1; M1/M2 verified locally, on VM108 and in Windows/Linux hosted CI. Updated 2026-10-01.
+Status: pre-v0.1; M1/M2/M3 verified locally, on VM108 and in conformance suites. Updated 2026-10-02.
 
 Different representations may change; contract-equivalent information must not.
 
@@ -83,11 +83,12 @@ MACs and OS package signatures remain owned by their protocols.
 
 ## M3 — Go and Rust conformance
 
-Add independent Go checks for LiNeP-Ollama and Rust checks for L.I.A.R.A.-OS.
-Native implementations may share a specification without linking a C++ runtime.
-Exercise uint64 IDs/seeds, float32 options, limits and version/presence behavior.
-Reuse pinned LiNeP v0.2 wire golden frames in LiNeP adapter tests, separately
-from EQUORUS object fixtures.
+Implementation & results: [M3 verification](docs/M3_VERIFICATION.md).
+- [x] Independent Go checks for LiNeP-Ollama (`go/equorus`) with bounded parser, canonical profile and SHA-256.
+- [x] Independent Rust checks for L.I.A.R.A.-OS (`rust`) with zero external dependencies.
+- [x] Native implementations share the specification without linking C++ runtime.
+- [x] uint64 IDs/seeds, float32 options, limits and version/presence behavior verified across all runtimes.
+- [x] LiNeP v0.2 request adapters tested against native Go and Rust types with roundtrip equivalence.
 
 Exit: C++, Python, Go and Rust agree on supported values and canonical bytes.
 Existing LiNeP v0.2 frames remain byte-compatible under adapter tests.

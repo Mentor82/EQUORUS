@@ -1,0 +1,17 @@
+[package]
+name = "equorus"
+version = "0.1.0"
+edition = "2021"
+authors = ["L.I.A.R.A. Core Team"]
+description = "Canonical representation and transport-independent serialization platform"
+
+[dependencies]
+# 100% Pure Rust Standard Library (Zero External Dependencies)
+
+[[bin]]
+name = "equorus_roundtrip"
+path = "src/bin/equorus_roundtrip.rs"
+
+[[bin]]
+name = "equorus_integrity"
+path = "src/bin/equorus_integrity.rs"
