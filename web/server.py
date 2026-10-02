@@ -27,11 +27,20 @@ if PY_LIB.exists():
     sys.path.insert(0, str(PY_LIB))
 
 try:
-    from equorus_reference import Envelope, Limits, ContractError
-    from equorus_integrity import compute_integrity
+    from equorus import Envelope, Limits, ContractError, compute_integrity
     HAS_PY_REF = True
 except ImportError:
-    HAS_PY_REF = False
+    try:
+        from equorus_reference import Envelope, Limits, ContractError
+        from equorus_integrity import compute_integrity
+        HAS_PY_REF = True
+    except ImportError:
+        try:
+            from equorus.equorus_reference import Envelope, Limits, ContractError
+            from equorus.equorus_integrity import compute_integrity
+            HAS_PY_REF = True
+        except ImportError:
+            HAS_PY_REF = False
 
 def find_binary(candidates):
     for c in candidates:
@@ -98,16 +107,46 @@ class EquorusStudioHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path == "/api/compare":
             content_length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(content_length).decode("utf-8")
+            raw_body = self.rfile.read(content_length)
+            try:
+                body = raw_body.decode("utf-8")
+            except UnicodeDecodeError:
+                try:
+                    body = raw_body.decode("latin-1")
+                except Exception:
+                    self._send_json(400, {"error": "Invalid character encoding in request body"})
+                    return
             try:
                 req = json.loads(body)
                 raw_json = req.get("raw", "")
-                type_id = req.get("type_id", "vinox.provenance.snapshot")
+                type_id = req.get("type_id")
             except Exception as e:
                 self._send_json(400, {"error": f"Invalid request body: {e}"})
                 return
 
-            res = self._execute_compare(raw_json.encode("utf-8"), type_id)
+            if isinstance(raw_json, dict) and "value" in raw_json and isinstance(raw_json["value"], str):
+                raw_json = raw_json["value"]
+
+            if isinstance(raw_json, (dict, list)):
+                raw_bytes = json.dumps(raw_json).encode("utf-8")
+                if not type_id and isinstance(raw_json, dict):
+                    type_id = raw_json.get("type_id")
+            elif isinstance(raw_json, str):
+                raw_bytes = raw_json.encode("utf-8")
+                if not type_id:
+                    try:
+                        p = json.loads(raw_json)
+                        if isinstance(p, dict):
+                            type_id = p.get("type_id")
+                    except Exception:
+                        pass
+            else:
+                raw_bytes = str(raw_json).encode("utf-8")
+
+            if not type_id:
+                type_id = "vinox.provenance.snapshot"
+
+            res = self._execute_compare(raw_bytes, type_id)
             self._send_json(200, res)
             return
 
@@ -128,6 +167,7 @@ class EquorusStudioHandler(SimpleHTTPRequestHandler):
         self.wfile.write(json.dumps(obj).encode("utf-8"))
 
     def _execute_compare(self, raw_bytes, type_id):
+        print(f"DEBUG: type_id={type_id}, len={len(raw_bytes)}, head={raw_bytes[:60]}", flush=True)
         results = {}
         digests = []
 
@@ -135,7 +175,7 @@ class EquorusStudioHandler(SimpleHTTPRequestHandler):
         if HAS_PY_REF:
             t0 = time.perf_counter()
             try:
-                env = Envelope.decode(raw_bytes, type_id, Limits())
+                env = Envelope.decode(raw_bytes, type_id, supported_versions=("0.1",), limits=Limits())
                 rec = compute_integrity(env)
                 dt_us = int((time.perf_counter() - t0) * 1_000_000)
                 results["python"] = {"status": "OK", "digest": rec.digest, "micros": dt_us}

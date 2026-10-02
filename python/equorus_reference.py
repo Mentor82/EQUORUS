@@ -224,7 +224,18 @@ class JsonCodec:
 
 TYPES = {"vinox.provenance.snapshot": "vinox", "liara.heartbeat.snapshot": "heartbeat",
          "linep.v02.request": "linep"}
-SCHEMA_DIR = Path(__file__).resolve().parents[1] / "schemas/pilot-v0.1"
+def _find_schema_dir():
+    for candidate in [
+        Path(__file__).resolve().parents[1] / "schemas/pilot-v0.1",
+        Path(__file__).resolve().parent / "schemas/pilot-v0.1",
+        Path("/usr/share/equorus/schemas/pilot-v0.1"),
+        Path("/usr/share/equorus/web/schemas/pilot-v0.1"),
+    ]:
+        if candidate.is_dir():
+            return candidate
+    return Path(__file__).resolve().parents[1] / "schemas/pilot-v0.1"
+
+SCHEMA_DIR = _find_schema_dir()
 SCHEMAS = {t: Draft202012Validator(json.loads((SCHEMA_DIR / f"{n}.schema.json").read_text(encoding="utf-8")))
            for t, n in TYPES.items()}
 UNITS = dict(utilization_ratio="ratio", memory_used_ratio="ratio", temperature_c="celsius",

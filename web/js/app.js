@@ -9,6 +9,7 @@ import { DiffView } from './ui/diff_view.js';
 import { IntegrityView } from './ui/integrity_view.js';
 import { AdapterView } from './ui/adapter_view.js';
 import { CodegenView } from './ui/codegen_view.js';
+import { CompareView } from './ui/compare_view.js';
 
 export class EquorusStudioApp {
   constructor() {
@@ -59,6 +60,10 @@ export class EquorusStudioApp {
       container: document.getElementById('codegen-container')
     });
 
+    this.compareView = new CompareView({
+      container: document.getElementById('compare-container')
+    });
+
     // 3. Load default initial preset
     this.handlePresetChange('vinox-full');
   }
@@ -68,9 +73,9 @@ export class EquorusStudioApp {
     const tabButtons = document.querySelectorAll('.right-tab-btn');
     tabButtons.forEach(btn => {
       if (btn.dataset.tab === tabId) {
-        btn.className = 'right-tab-btn text-xs font-bold px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-white shadow-xs transition-all cursor-pointer';
+        btn.className = 'right-tab-btn text-xs font-bold px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-white shadow-xs transition-all cursor-pointer flex items-center space-x-1.5';
       } else {
-        btn.className = 'right-tab-btn text-xs font-medium px-3.5 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] transition-all cursor-pointer';
+        btn.className = 'right-tab-btn text-xs font-medium px-3.5 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] transition-all cursor-pointer flex items-center space-x-1.5';
       }
     });
 
@@ -78,7 +83,8 @@ export class EquorusStudioApp {
       diff: document.getElementById('diff-container'),
       integrity: document.getElementById('integrity-container'),
       adapter: document.getElementById('adapter-container'),
-      codegen: document.getElementById('codegen-container')
+      codegen: document.getElementById('codegen-container'),
+      compare: document.getElementById('compare-container')
     };
 
     for (const [key, el] of Object.entries(panels)) {
@@ -112,6 +118,7 @@ export class EquorusStudioApp {
       this.integrityView.update({ record: null, canonicalBytes: null, isValid: false, isTampered: false });
       this.adapterView.update(null);
       this.codegenView.update({ rawJson: null, typeId: null, isValid: false });
+      this.compareView.update({ rawJson: null, typeId: null, browserDigest: null, isValid: false });
       return;
     }
 
@@ -136,6 +143,12 @@ export class EquorusStudioApp {
       this.codegenView.update({
         rawJson: rawText,
         typeId: valResult.typeId,
+        isValid: true
+      });
+      this.compareView.update({
+        rawJson: rawText,
+        typeId: valResult.typeId,
+        browserDigest: integrity.record.digest,
         isValid: true
       });
     } catch (e) {

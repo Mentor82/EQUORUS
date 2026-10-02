@@ -24,7 +24,10 @@ except ImportError:
     except ImportError as e:
         raise ImportError(f"Could not import LIARA heartbeat contracts: {e}")
 
-from equorus_reference import Envelope, Limits, ContractError
+try:
+    from equorus_reference import Envelope, Limits, ContractError
+except ImportError:
+    from .equorus_reference import Envelope, Limits, ContractError
 
 UINT64_MAX = 18446744073709551615
 

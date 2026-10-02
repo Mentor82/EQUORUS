@@ -3,7 +3,10 @@ from dataclasses import dataclass
 import hashlib
 import hmac
 import struct
-from equorus_reference import Envelope, JsonCodec, Limits, check_value, fail
+try:
+    from equorus_reference import Envelope, JsonCodec, Limits, check_value, fail
+except ImportError:
+    from .equorus_reference import Envelope, JsonCodec, Limits, check_value, fail
 
 PROFILE = "equorus-value-v1"
 ALGORITHM = "sha-256"

@@ -63,6 +63,10 @@
           <button data-tab="codegen" class="right-tab-btn text-xs font-medium px-3.5 py-1.5 rounded-lg transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] cursor-pointer">
             Code Export
           </button>
+          <button data-tab="compare" class="right-tab-btn text-xs font-medium px-3.5 py-1.5 rounded-lg transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] cursor-pointer flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>Live Node Compare</span>
+          </button>
         </div>
       </div>
 
@@ -72,6 +76,7 @@
         <div id="integrity-container" class="flex-1" style="display: none;"></div>
         <div id="adapter-container" class="flex-1" style="display: none;"></div>
         <div id="codegen-container" class="flex-1" style="display: none;"></div>
+        <div id="compare-container" class="flex-1" style="display: none;"></div>
       </div>
     </section>
   </main>
