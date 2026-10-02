@@ -326,3 +326,52 @@ func TestLinePAdapterRoundtrip(t *testing.T) {
 		})
 	}
 }
+
+func TestLinePAdapterExtraOptions(t *testing.T) {
+	limits := DefaultLimits()
+	req := LinePRequestEnvelope{
+		Stream: StreamIdentity{
+			RequestID:   1,
+			ExecutionID: 2,
+			OutputID:    0,
+		},
+		Profile:         ProfileChat,
+		ModelID:         "test",
+		Payload:         "hello",
+		MaxTokens:       16,
+		Temperature:     0.5,
+		StreamRequested: false,
+		HasOptions:      true,
+		Options: GenerationOptions{
+			TopP:             0.9,
+			TopK:             40,
+			RepeatPenalty:    1.0,
+			RepeatLastN:      64,
+			Seed:             42,
+			PresencePenalty:  0.0,
+			FrequencyPenalty: 0.0,
+			ExtraOptions:     [][2]string{{"z", "2"}, {"a", "1"}},
+		},
+	}
+
+	env, err := FromLinePRequest(req, nil, limits)
+	if err != nil {
+		t.Fatalf("FromLinePRequest failed: %v", err)
+	}
+
+	back, err := ToLinePRequest(env)
+	if err != nil {
+		t.Fatalf("ToLinePRequest failed: %v", err)
+	}
+
+	if len(back.Options.ExtraOptions) != 2 ||
+		back.Options.ExtraOptions[0] != [2]string{"a", "1"} ||
+		back.Options.ExtraOptions[1] != [2]string{"z", "2"} {
+		t.Fatalf("expected sorted extra_options, got: %v", back.Options.ExtraOptions)
+	}
+
+	req.Options.ExtraOptions = [][2]string{{"k", "1"}, {"k", "2"}}
+	if _, err := FromLinePRequest(req, nil, limits); err == nil {
+		t.Fatalf("expected error on duplicate extra_options keys")
+	}
+}

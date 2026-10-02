@@ -2,7 +2,9 @@ use equorus::integrity::{
     canonical_bytes, compute_integrity, verify_integrity, CANONICAL_PROFILE, INTEGRITY_ALGORITHM,
 };
 use equorus::limits::Limits;
-use equorus::linep::{from_linep_request, to_linep_request};
+use equorus::linep::{
+    from_linep_request, profile, to_linep_request, GenerationOptions, RequestEnvelope, StreamIdentity,
+};
 use equorus::parser::parse_json;
 use equorus::pilot::decode_pilot;
 use equorus::sha256::Sha256;
@@ -156,6 +158,48 @@ fn test_linep_adapter_roundtrip() {
         let c2 = canonical_bytes(env2.value(), CANONICAL_PROFILE, &limits).unwrap();
         assert_eq!(c1, c2, "Roundtrip canonical bytes mismatch for {}", file);
     }
+}
+
+#[test]
+fn test_linep_adapter_extra_options_sorting_and_duplicates() {
+    let limits = Limits::default();
+    let mut req = RequestEnvelope {
+        stream: StreamIdentity {
+            request_id: 1,
+            execution_id: 2,
+            output_id: 0,
+        },
+        profile: profile::CHAT,
+        model_id: "test".to_string(),
+        payload: b"hello".to_vec(),
+        max_tokens: 16,
+        temperature: 0.5,
+        stream_requested: false,
+        options: Some(GenerationOptions {
+            top_p: 0.9,
+            top_k: 40,
+            repeat_penalty: 1.0,
+            repeat_last_n: 64,
+            seed: 42,
+            presence_penalty: 0.0,
+            frequency_penalty: 0.0,
+            stop_sequences: vec![],
+            extra_options: vec![("z".to_string(), "2".to_string()), ("a".to_string(), "1".to_string())],
+        }),
+    };
+
+    let env = from_linep_request(&req, None, &limits).unwrap();
+    let back = to_linep_request(&env).unwrap();
+    assert_eq!(
+        back.options.as_ref().unwrap().extra_options,
+        vec![("a".to_string(), "1".to_string()), ("z".to_string(), "2".to_string())]
+    );
+
+    req.options.as_mut().unwrap().extra_options = vec![
+        ("dup".to_string(), "1".to_string()),
+        ("dup".to_string(), "2".to_string()),
+    ];
+    assert!(from_linep_request(&req, None, &limits).is_err());
 }
 
 #[test]

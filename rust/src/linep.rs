@@ -247,12 +247,19 @@ pub fn from_linep_request(
             "stop_sequences".to_string(),
             Value::Array(opt.stop_sequences.iter().map(|s| Value::String(s.clone())).collect()),
         );
+        let mut sorted_extra = opt.extra_options.clone();
+        sorted_extra.sort_by(|a, b| a.0.as_bytes().cmp(b.0.as_bytes()));
+        for w in sorted_extra.windows(2) {
+            if w[0].0 == w[1].0 {
+                return fail(ErrorCode::OptionKeys);
+            }
+        }
         opt_obj.insert(
             "extra_options".to_string(),
             Value::Array(
-                opt.extra_options
-                    .iter()
-                    .map(|(k, v)| Value::Array(vec![Value::String(k.clone()), Value::String(v.clone())]))
+                sorted_extra
+                    .into_iter()
+                    .map(|(k, v)| Value::Array(vec![Value::String(k), Value::String(v)]))
                     .collect(),
             ),
         );

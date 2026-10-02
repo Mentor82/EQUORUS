@@ -1,6 +1,7 @@
 package equorus
 
 import (
+	"sort"
 	"strconv"
 )
 
@@ -102,7 +103,8 @@ func ToLinePRequest(env Envelope) (req LinePRequestEnvelope, err error) {
 	return req, nil
 }
 
-func FromLinePRequest(req LinePRequestEnvelope, provenance map[string]Value, limits Limits) (Envelope, error) {
+func FromLinePRequest(req LinePRequestEnvelope, provenance map[string]Value, limits Limits) (env Envelope, err error) {
+	defer recoverError(&err)
 	var profStr string
 	switch req.Profile {
 	case ProfileGenerate:
@@ -138,8 +140,21 @@ func FromLinePRequest(req LinePRequestEnvelope, provenance map[string]Value, lim
 		for i, s := range req.Options.StopSequences {
 			stopSeqs[i] = NewString(s)
 		}
-		extraOpts := make([]Value, len(req.Options.ExtraOptions))
-		for i, pair := range req.Options.ExtraOptions {
+
+		sortedExtra := make([][2]string, len(req.Options.ExtraOptions))
+		copy(sortedExtra, req.Options.ExtraOptions)
+		sort.Slice(sortedExtra, func(i, j int) bool {
+			return sortedExtra[i][0] < sortedExtra[j][0]
+		})
+
+		for i := 1; i < len(sortedExtra); i++ {
+			if sortedExtra[i-1][0] == sortedExtra[i][0] {
+				fail(ErrOptionKeys)
+			}
+		}
+
+		extraOpts := make([]Value, len(sortedExtra))
+		for i, pair := range sortedExtra {
 			extraOpts[i] = NewArray([]Value{NewString(pair[0]), NewString(pair[1])})
 		}
 

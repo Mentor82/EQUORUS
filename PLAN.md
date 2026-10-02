@@ -95,16 +95,12 @@ Existing LiNeP v0.2 frames remain byte-compatible under adapter tests.
 
 ## M4 — Opt-in consumer integration
 
-1. VINOX provenance and LIARA heartbeat export/import pilots.
-2. LiNeP v0.2 runtime adapters and L.I.A.R.A.-OS after M3.
-3. Personal and website only through explicit domain/API mappings.
-4. Other projects only when a real exchange case justifies them.
-
-Keep existing paths available for comparison and rollback. Do not inject an
-EQUORUS envelope into a LiNeP payload without an explicitly supported application
-mapping. A request projection is not a new wire format. Do not convert Personal
-confidence to Core confidence without an agreed domain rule. Do not replace
-existing OS package signature preimages.
+Implementation & results: [M4 verification](docs/M4_VERIFICATION.md).
+- [x] VINOX provenance export/import adapter implemented in C++ and pure C ABI with field availability checks.
+- [x] LIARA runtime heartbeat snapshot adapter in Python with microsecond fidelity, uint64 sequence, and strict empty attributes invariant.
+- [x] LiNeP v0.2 request adapters verified across C++, Go, and Rust with canonical options sorting and golden frame equivalence.
+- [x] Pure C ABI smoke test passes memory lifetime, independent allocator boundary, and error handling checks.
+- [x] Existing consumer wire formats and OS signature preimages remain untouched; opt-in can be disabled without migration.
 
 Exit: real adapter roundtrips and existing consumer tests pass; unsupported
 features fail clearly; opt-in can be disabled without migrating stored data.
