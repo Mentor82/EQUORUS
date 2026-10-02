@@ -9,8 +9,12 @@ sys.path.insert(0, str(ROOT / "python"))
 sys.path.insert(0, "c:/ai/LIARA")
 
 from equorus_reference import Envelope, Limits, ContractError
-from equorus_liara import heartbeat_to_envelope, envelope_to_heartbeat
-from services.contracts.heartbeat import HeartbeatSnapshot, ResourceObservation
+try:
+    from equorus_liara import heartbeat_to_envelope, envelope_to_heartbeat
+    from services.contracts.heartbeat import HeartbeatSnapshot, ResourceObservation
+except ImportError as _err:
+    print(f"SKIP: LIARA heartbeat contracts not available on this host ({_err})")
+    sys.exit(0)
 
 FIXTURES = ROOT / "tests/fixtures/pilot-v0.1"
 
