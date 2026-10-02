@@ -33,7 +33,7 @@ export class DiffView {
         <div class="flex-1 flex flex-col space-y-2 min-h-[220px]">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold text-[var(--muted-foreground)]">Canonical Hex Dump & ASCII representation:</span>
-            <button id="btn-copy-hex" class="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] border border-[var(--border)] px-2 py-0.5 rounded">
+            <button id="btn-copy-hex" class="text-xs font-medium bg-[var(--secondary)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] px-2.5 py-1 rounded-md transition shadow-xs cursor-pointer active:scale-95">
               Copy Hex
             </button>
           </div>

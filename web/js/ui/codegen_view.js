@@ -13,16 +13,16 @@ export class CodegenView {
   render() {
     this.container.innerHTML = `
       <div class="flex flex-col h-full space-y-3">
-        <div class="flex items-center justify-between border-b border-[var(--border)] pb-2">
-          <div class="flex space-x-1" id="lang-tabs">
-            <button data-lang="cpp" class="text-xs px-3 py-1 rounded-md font-semibold transition bg-[var(--primary)] text-[var(--primary-foreground)]">C++20</button>
-            <button data-lang="c_abi" class="text-xs px-3 py-1 rounded-md font-semibold transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]">C ABI</button>
-            <button data-lang="python" class="text-xs px-3 py-1 rounded-md font-semibold transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]">Python</button>
-            <button data-lang="go" class="text-xs px-3 py-1 rounded-md font-semibold transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]">Go</button>
-            <button data-lang="rust" class="text-xs px-3 py-1 rounded-md font-semibold transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]">Rust (std)</button>
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+          <div class="flex p-0.5 bg-[var(--background)] border border-[var(--border)] rounded-lg space-x-0.5" id="lang-tabs">
+            <button data-lang="cpp" class="text-xs px-2.5 py-1 rounded-md font-bold transition-all bg-[var(--primary)] text-white shadow-xs cursor-pointer">C++20</button>
+            <button data-lang="c_abi" class="text-xs px-2.5 py-1 rounded-md font-medium transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] cursor-pointer">C ABI</button>
+            <button data-lang="python" class="text-xs px-2.5 py-1 rounded-md font-medium transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] cursor-pointer">Python</button>
+            <button data-lang="go" class="text-xs px-2.5 py-1 rounded-md font-medium transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] cursor-pointer">Go</button>
+            <button data-lang="rust" class="text-xs px-2.5 py-1 rounded-md font-medium transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] cursor-pointer">Rust (std)</button>
           </div>
           <div>
-            <button id="btn-copy-code" class="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] border border-[var(--border)] px-2.5 py-1 rounded transition">
+            <button id="btn-copy-code" class="text-xs font-medium bg-[var(--secondary)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] px-3 py-1 rounded-md transition shadow-xs cursor-pointer active:scale-95">
               Copy Snippet
             </button>
           </div>
@@ -61,9 +61,9 @@ export class CodegenView {
     const buttons = this.tabsContainer.querySelectorAll('button[data-lang]');
     buttons.forEach(b => {
       if (b.dataset.lang === lang) {
-        b.className = 'text-xs px-3 py-1 rounded-md font-semibold transition bg-[var(--primary)] text-[var(--primary-foreground)]';
+        b.className = 'text-xs px-2.5 py-1 rounded-md font-bold transition-all bg-[var(--primary)] text-white shadow-xs cursor-pointer';
       } else {
-        b.className = 'text-xs px-3 py-1 rounded-md font-semibold transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]';
+        b.className = 'text-xs px-2.5 py-1 rounded-md font-medium transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] cursor-pointer';
       }
     });
     this.codePre.innerText = this.snippets[lang] || '// No code available';

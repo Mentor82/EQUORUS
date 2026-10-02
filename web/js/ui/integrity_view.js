@@ -21,8 +21,8 @@ export class IntegrityView {
             </div>
           </div>
           <div>
-            <button id="btn-tamper-toggle" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition">
-              Simulate Tampering (Bit-Flip)
+            <button id="btn-tamper-toggle" class="text-xs font-semibold px-3.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 transition shadow-xs cursor-pointer active:scale-95 flex items-center space-x-1.5">
+              <span>⚠️ Simulate Tampering (Bit-Flip)</span>
             </button>
           </div>
         </div>
@@ -31,7 +31,7 @@ export class IntegrityView {
         <div class="space-y-1.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wider">Detached SHA-256 Digest:</span>
-            <button id="btn-copy-digest" class="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] border border-[var(--border)] px-2 py-0.5 rounded">
+            <button id="btn-copy-digest" class="text-xs font-medium bg-[var(--secondary)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] px-2.5 py-1 rounded-md transition shadow-xs cursor-pointer active:scale-95">
               Copy Digest
             </button>
           </div>

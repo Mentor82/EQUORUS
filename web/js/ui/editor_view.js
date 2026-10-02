@@ -11,22 +11,29 @@ export class EditorView {
   render() {
     this.container.innerHTML = `
       <div class="flex flex-col h-full space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <span class="text-sm font-semibold text-[var(--foreground)]">Preset:</span>
-            <select id="preset-selector" class="text-sm bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] rounded px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-[var(--primary)]">
+        <!-- Preset & Action Toolbar (2 Rows to prevent squishing) -->
+        <div class="flex flex-col space-y-2 pb-1">
+          <!-- Row 1: Preset dropdown (100% width, truncated options) -->
+          <div class="flex items-center space-x-2 w-full">
+            <span class="text-xs font-semibold text-[var(--muted-foreground)] whitespace-nowrap">Preset:</span>
+            <select id="preset-selector" class="flex-1 min-w-0 w-full text-xs bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-[var(--primary)] truncate font-medium cursor-pointer">
             </select>
           </div>
-          <div class="flex items-center space-x-2">
-            <button id="btn-format" class="text-xs bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] px-2.5 py-1 rounded transition">
-              Prettify
-            </button>
-            <button id="btn-minify" class="text-xs bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] px-2.5 py-1 rounded transition">
-              Minify
-            </button>
-            <button id="btn-clear" class="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] px-2 py-1">
-              Clear
-            </button>
+          <!-- Row 2: Dedicated Payload Action Buttons -->
+          <div class="flex items-center justify-between pt-0.5">
+            <span class="text-[11px] font-medium text-[var(--muted-foreground)] uppercase tracking-wider">Payload Actions</span>
+            <div class="flex items-center space-x-1.5">
+              <button id="btn-format" class="text-xs font-medium bg-[var(--secondary)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] px-3 py-1 rounded-lg transition shadow-xs flex items-center space-x-1 cursor-pointer active:scale-95">
+                <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                <span>Format</span>
+              </button>
+              <button id="btn-minify" class="text-xs font-medium bg-[var(--secondary)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] px-3 py-1 rounded-lg transition shadow-xs cursor-pointer active:scale-95">
+                <span>Minify</span>
+              </button>
+              <button id="btn-clear" class="text-xs font-medium bg-[var(--secondary)] hover:bg-rose-500/20 hover:text-rose-300 hover:border-rose-500/40 text-[var(--muted-foreground)] border border-[var(--border)] px-3 py-1 rounded-lg transition shadow-xs cursor-pointer active:scale-95">
+                <span>Clear</span>
+              </button>
+            </div>
           </div>
         </div>
 

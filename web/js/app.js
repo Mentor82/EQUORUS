@@ -68,9 +68,9 @@ export class EquorusStudioApp {
     const tabButtons = document.querySelectorAll('.right-tab-btn');
     tabButtons.forEach(btn => {
       if (btn.dataset.tab === tabId) {
-        btn.className = 'right-tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] shadow-sm';
+        btn.className = 'right-tab-btn text-xs font-bold px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-white shadow-xs transition-all cursor-pointer';
       } else {
-        btn.className = 'right-tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition';
+        btn.className = 'right-tab-btn text-xs font-medium px-3.5 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] transition-all cursor-pointer';
       }
     });
 
