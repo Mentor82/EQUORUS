@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EQUORUS Studio - Conformance Workbench & Inspector (v0.1)</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] min-h-screen antialiased flex flex-col p-4 md:p-6">
+  <!-- Top Navigation Header -->
+  <header class="max-w-7xl w-full mx-auto mb-5 flex flex-wrap items-center justify-between border-b border-[var(--border)] pb-4 gap-4">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-lg bg-[var(--primary)] flex items-center justify-center font-bold text-white shadow-md">
+        EQ
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-[var(--foreground)] tracking-tight">EQUORUS Studio</h1>
+        <p class="text-xs text-[var(--muted-foreground)]">Object Envelope, Lossless Canonical Integrity & Conformance Workbench</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-2 text-xs">
+      <span class="px-2.5 py-1 rounded-md font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
+        Profile: equorus-value-v1
+      </span>
+      <span class="px-2.5 py-1 rounded-md font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        Version: v0.1.0
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Grid Workspace -->
+  <main class="max-w-7xl w-full mx-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5">
+    <!-- Left Column: Raw JSON Envelope Editor (5 cols) -->
+    <section class="lg:col-span-5 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 flex flex-col shadow-sm">
+      <div class="flex items-center justify-between mb-3 border-b border-[var(--border)] pb-2">
+        <h2 class="text-sm font-bold text-[var(--foreground)] flex items-center space-x-2">
+          <span>Raw Envelope Editor</span>
+        </h2>
+        <span class="text-xs text-[var(--muted-foreground)]">Lexical & Schema Check</span>
+      </div>
+
+      <div id="editor-container" class="flex-1 flex flex-col">
+        <!-- Mounted by EditorView -->
+      </div>
+    </section>
+
+    <!-- Right Column: Inspector & Operations Tabs (7 cols) -->
+    <section class="lg:col-span-7 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 flex flex-col shadow-sm">
+      <!-- Tabs Navigation -->
+      <div class="flex items-center justify-between mb-3 border-b border-[var(--border)] pb-2 overflow-x-auto">
+        <div class="flex space-x-2">
+          <button data-tab="diff" class="right-tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] shadow-sm">
+            Canonical Diff
+          </button>
+          <button data-tab="integrity" class="right-tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">
+            Detached Integrity
+          </button>
+          <button data-tab="adapter" class="right-tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">
+            Consumer Adapter
+          </button>
+          <button data-tab="codegen" class="right-tab-btn text-xs font-semibold px-3 py-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">
+            Code Export
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content Panels -->
+      <div class="flex-1 flex flex-col">
+        <div id="diff-container" class="flex-1"></div>
+        <div id="integrity-container" class="flex-1" style="display: none;"></div>
+        <div id="adapter-container" class="flex-1" style="display: none;"></div>
+        <div id="codegen-container" class="flex-1" style="display: none;"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-7xl w-full mx-auto mt-5 pt-3 border-t border-[var(--border)] text-xs text-[var(--muted-foreground)] flex items-center justify-between">
+    <div>EQUORUS v0.1 Specification Conformance &bull; Zero External Dependencies (C++, C ABI, Python, Go, Rust)</div>
+    <div class="font-mono">Mentor82/EQUORUS</div>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

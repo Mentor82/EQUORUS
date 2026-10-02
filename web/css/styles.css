@@ -1,0 +1,58 @@
+/* EQUORUS Studio - Design Tokens & Styles */
+
+:root {
+  --background: #0d1117;
+  --card: #161b22;
+  --content: #0d1117;
+  --border: #30363d;
+  --foreground: #c9d1d9;
+  --muted-foreground: #8b949e;
+  --primary: #388bfd;
+  --primary-foreground: #ffffff;
+  --secondary: #21262d;
+  --secondary-foreground: #c9d1d9;
+  --accent: #1f6feb;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --background: #f6f8fa;
+    --card: #ffffff;
+    --content: #ffffff;
+    --border: #d0d7de;
+    --foreground: #24292f;
+    --muted-foreground: #57606a;
+    --primary: #0969da;
+    --primary-foreground: #ffffff;
+    --secondary: #eaeef2;
+    --secondary-foreground: #24292f;
+    --accent: #0969da;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
