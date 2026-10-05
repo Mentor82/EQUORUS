@@ -118,8 +118,20 @@ class EquorusStudioHandler(SimpleHTTPRequestHandler):
                     return
             try:
                 req = json.loads(body)
-                raw_json = req.get("raw", "")
-                type_id = req.get("type_id")
+                if isinstance(req, dict):
+                    if "raw" in req:
+                        raw_json = req.get("raw", "")
+                        type_id = req.get("type_id")
+                    elif "type_id" in req and "schema_version" in req:
+                        # Direct EQUORUS envelope posted without outer wrapper
+                        raw_json = body
+                        type_id = req.get("type_id")
+                    else:
+                        raw_json = req.get("raw", "")
+                        type_id = req.get("type_id")
+                else:
+                    raw_json = body
+                    type_id = None
             except Exception as e:
                 self._send_json(400, {"error": f"Invalid request body: {e}"})
                 return
