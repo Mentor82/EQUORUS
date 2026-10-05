@@ -128,18 +128,20 @@ export class EquorusStudioApp {
       const canonicalBytes = serializeCanonicalBytes(envelopeObj);
       this.state.canonicalBytes = canonicalBytes;
 
+      // Update immediate synchronous views
+      this.diffView.update({ canonicalBytes, rawText });
+      this.adapterView.update(envelopeObj);
+
       const integrity = await computeEnvelopeIntegrity(envelopeObj);
       this.state.integrityRecord = integrity.record;
 
-      // Update all view components
-      this.diffView.update({ canonicalBytes, rawText });
+      // Update integrity, codegen and compare components
       this.integrityView.update({
         record: integrity.record,
         canonicalBytes,
         isValid: true,
         isTampered: false
       });
-      this.adapterView.update(envelopeObj);
       this.codegenView.update({
         rawJson: rawText,
         typeId: valResult.typeId,
