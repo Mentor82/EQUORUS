@@ -25,8 +25,6 @@ export function buildPreimage(canonicalBytes) {
   preimage.set(canonicalBytes, PREIMAGE_HEADER.length);
   return preimage;
 }
-
-/**
 // Pure JS SHA-256 fallback for non-secure contexts (e.g. plain HTTP over LAN IP where crypto.subtle is undefined)
 const K = new Uint32Array([
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
